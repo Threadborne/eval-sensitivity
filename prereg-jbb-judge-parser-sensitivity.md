@@ -2,7 +2,7 @@
 
 **Author:** Michael Smith, Small Mind LLC, Lansing, MI
 **Date:** 2026-09-16
-**Version:** 1.3
+**Version:** 1.4
 **Status:** Pre-registered. No scoring has been run. No number in this document is a result.
 
 ---
@@ -40,7 +40,7 @@ The study measures the effect of each dial and both together on the ordering of 
 - `llama-guard-1`: present in the artifacts as the `jailbroken_llama_guard1` field for 16 of 18 entries. The two DSN entries have no such field; DSN was added to the artifacts repository in the pinned commit, after the Llama Guard 1 labeling pass. Used as-is where present; the two DSN entries are recorded with reason `stored_label_absent` and this judge level covers 16 entries. Kendall's τ for this level is computed over the 16 entries it covers, and this is stated wherever it is reported. Zero compute. Note: Llama Guard 1 is the judge governed by the 15-token defect in issue #50, so this level interacts with the parser dial in a known way.
 - `llama3-8b-instruct`
 - `qwen2.5-7b-instruct`, pinned. The v1.1 text allowing "the current Qwen instruct model at execution time" is withdrawn: a study of undeclared choice space should not leave a choice open inside a dial.
-- `mistral-7b-instruct`
+- `mistral-7b-instruct`. **Deviation, declared 2026-09-16 before its scoring pass:** this judge alone runs with `num_predict=32` and a 30-second per-call timeout. Under the uncapped v2 script it produced three consecutive 300-second hangs (DSN/vicuna indices 53 and 54, GCG/llama-2 index 81) and could not complete. All other local judges ran uncapped. Rows that time out under the cap are recorded with reason `judge_timeout` and count as unparseable under the §3 unparseable-reply rule. This is a decoding-option difference between judges and is reported as such.
 - `gemma-2-9b-it`
 
 Four families among the locals (Meta, Alibaba, Mistral AI, Google) so that same-family blind spots are not the only variation. Two Meta judges (Llama-3-70B, Llama Guard 1) are already in the data. All local judges run at the precision that fits a 16 GB GPU; precision recorded in Appendix A.
@@ -126,7 +126,7 @@ No step is added or removed after scoring begins. Any deviation is recorded in a
 ## 9. Prior work this builds on
 
 - Chao, Debenedetti, Robey, Andriushchenko, Croce, Sehwag, Dobriban, Flammarion, Pappas, Tramèr, Hassani, Wong. *JailbreakBench: An Open Robustness Benchmark for Jailbreaking Large Language Models.* NeurIPS 2024 Datasets and Benchmarks.
-- collapseindex. Issue #50, `JailbreakBench/jailbreakbench`, 2026-09-16. Audit at `github.com/collapseindex/dinostomp/tree/main/audits/jailbreakbench`. This study runs the re-scoring that audit explicitly scoped out.
+- collapseindex. `dinostomp/FINDINGS.md` entries **F-030, F-031, F-032** at commit `3849382`. Append-only ledger; corrections are made in place with a date, so the IDs remain valid citations. Filed upstream as issue #50, `JailbreakBench/jailbreakbench`, 2026-09-16; the issue text is the corrected version. Audit script at `audits/jailbreakbench/`. This study runs the re-scoring that audit explicitly scoped out. The same ledger catalogues the parser-bug family across AISafetyLab (F-033 to F-035), HarmBench ArtPrompt (F-036), garak (F-037, F-038), and SWE-bench (F-039), with StrongREJECT (N-024) recorded as the counterexample whose autograder fails safe. This study measures one entry in that family; the method applies to the others.
 - JailbreakBench `judge_comparison` dataset, HuggingFace `JailbreakBench/JBB-Behaviors`, config `judge_comparison`. Source of human labels for M₃.
 - Smith. *Evaluation Sensitivity: The Formal Statement.* 2026-09-16. Companion framework document; SHA-256 in Appendix B.
 - Smith. *The Number Moved, the Model Didn't.* smallmind.net, September 2026. First instance of the same method on Sleep-EDF.
@@ -164,6 +164,7 @@ Any edit to this document after publication produces a new version with a new ha
 
 ## Changelog
 
+- **1.3 → 1.4, 2026-09-16, after the Llama-3-8B, Qwen2.5-7B, and Gemma-2-9B passes completed and before the Mistral pass.** (1) Mistral-7B declared as running with `num_predict=32` and a 30-second timeout, with the reason and the three hang indices recorded; §3. (2) Citation for the parser audit changed from the issue number to the dinostomp ledger IDs F-030, F-031, F-032 at commit 3849382, per the ledger author's guidance; the cross-benchmark family is noted; §9. No hypothesis or threshold changed. Version 1.4 is the pre-registration of record.
 - **1.2 → 1.3, 2026-09-16, before the first local-judge scoring run.** Appendix A filled at execution time, as the appendix itself requires. No section other than Appendix A and this changelog changed. Version 1.3 is the pre-registration of record.
 - **1.1 → 1.2, 2026-09-16, after publication of 1.1 (commit c44d9211), before any scoring script commit and before any scoring run.** Corrections found by the scoring-script author on reading the pre-reg against the pinned sources. (1) Issue #50 lists eight defects, not ten; "ten" was the issue's probe count. §1 and §3 corrected. (2) Coverage is 14 of 18 entries at 100/100, not 16; the four PAIR figures were already correct. §2 corrected. (3) `jailbroken_llama_guard1` is absent for the two DSN entries; the Llama Guard 1 judge level covers 16 entries, stated in §3. (4) The corrected parser is three functions across three code paths, and one L175 defect is a coverage limit left unrepaired; stated in §3. (5) The Qwen judge is pinned; the "current model at execution time" clause is withdrawn. (6) **New rule:** unparseable judge replies under the corrected parser are reported under both denominator conventions plus the unparseable rate; §3 and §6.3. (7) M₂ requires a second scoring pass with a `judge_task` field; §4. (8) §6.1 contradicted §2 on missing responses; §6.1 corrected. (9) Stratification for the 70B reproduction check defined; §7. No hypothesis or threshold changed. Version 1.2 is the pre-registration of record.
 - **1.0 → 1.1, 2026-09-16, before publication.** Added `llama-guard-1` as a sixth judge level (labels already present in artifacts). Added the missing-response rule and per-entry coverage after verifying the artifacts directly. Recorded artifacts commit hash. Updated configuration count to 12 and compute estimate accordingly. No hypotheses or thresholds changed. Version 1.1 is the pre-registration of record.

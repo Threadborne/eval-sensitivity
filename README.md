@@ -8,7 +8,7 @@ Michael Smith, Small Mind LLC. September 2026.
 
 | File | What it is | SHA-256 |
 |---|---|---|
-| `prereg-jbb-judge-parser-sensitivity.md` | Pre-registered experimental design, v1.3. Hypotheses, thresholds, and analysis plan frozen before any scoring. Changelog inside. | `4e8f5ae0cbea84dbc51eaa9f6a9e82985f619b6b5a7cb3236872d84031b4dc88` |
+| `prereg-jbb-judge-parser-sensitivity.md` | Pre-registered experimental design, v1.4. Hypotheses, thresholds, and analysis plan frozen before any scoring. Changelog inside. | `752db2645910737e157841abf5310325c494374519432c746e1ed068f0524057` |
 | `evaluation-sensitivity-formal.md` | The formal framework: choice space, worst-case and expected-case sensitivity, the transfer test and nuisance fraction ν, rough-set treatment of the choice space, the refinement theorem, verified lineage, and prior work. | `433d27fed72188e595811fe58a1831be3aef7dceb4c4431ea0190df48e718dde` |
 | `the-number-is-a-point.md` | The same material, written to be taught from. | `b7fedfa656a8b81574372f038aec1eb0962e5f87d08738b6fa663ad7b8ea8d3c` |
 
@@ -27,6 +27,9 @@ Design is frozen at the pre-registration commit. The scoring script will be comm
 - 2026-09-16: Pre-registration v1.3: Appendix A filled with the four local judge tags and digests. No other change.
 - 2026-09-16: Script v2 committed (loop order, posix names, run manifest, num_ctx, comments stripped). Stub re-run clean.
 - 2026-09-16: Stored-label run complete: 3,600 rows, 0 judge calls.
+- 2026-09-16: Llama-3-8B, Qwen2.5-7B, Gemma-2-9B passes complete. Mistral-7B hung three times at the 300s timeout on the uncapped v2 script; 479 of 1,800 rows scored.
+- 2026-09-16: Pre-registration v1.4: Mistral deviation (num_predict=32, 30s timeout) declared before its pass; citations moved to dinostomp ledger IDs F-030/031/032 @ 3849382.
+- 2026-09-16: Script v3: judge_timeout rows, --num-predict, --timeout.
 - 2026-09-16: Scoring script frozen (`parsers.py`, `score.py`, `stub_judge.py`, `stub_results.jsonl`, `classifier_pinned_23dbdf6.py`). Not yet run against live judges.
 
 Prior versions remain in history. `v1.1` is at commit `c44d9211`.
