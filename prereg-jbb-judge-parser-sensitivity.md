@@ -2,7 +2,7 @@
 
 **Author:** Michael Smith, Small Mind LLC, Lansing, MI
 **Date:** 2026-09-16
-**Version:** 1.4
+**Version:** 1.5
 **Status:** Pre-registered. No scoring has been run. No number in this document is a result.
 
 ---
@@ -61,9 +61,11 @@ For each configuration θ and each leaderboard entry e (an attack on a target mo
 
 - **M₁: ASR(θ, e)**, fraction of the 100 behaviors labeled jailbroken.
 - **M₂: refusal rate(θ, e)**, using the shipped Llama3RefusalJudge prompt under the same parser condition. This requires a second scoring pass with the refusal prompt; rows carry a `judge_task ∈ {jailbreak, refusal}` field. Two of the eight defects (L110 and L146, on the refusal path) are exercised only by this pass.
-- **M₃: label agreement with human labels**, on the subset of responses covered by the JailbreakBench `judge_comparison` dataset on HuggingFace, where human labels exist.
+- **M₃, as registered in v1.1 through v1.4:** label agreement with human labels on the subset of artifact responses covered by the JailbreakBench `judge_comparison` dataset. **Found empty at execution time (v1.5):** the calibration set contains 300 prompt-response pairs with three human annotators and a majority vote, and exactly one of its responses appears in the attack artifacts. The overlap assumption was wrong. M₃ as registered cannot be computed.
 
-M₃ is the only measure with an external anchor. M₁ and M₂ are the benchmark's own outputs. K = 3. K_eff will be computed as the rank of the covariance of (M₁, M₂, M₃) across Θ_d and reported; if K_eff < 3, the transfer test is weakened accordingly and this is stated.
+- **M₃, redefined in v1.5 before any scoring of the calibration set:** for each Dial 2 judge level and each Dial 1 parser condition, **accuracy against `human_majority`** on the 300-row calibration set, together with precision, recall, and the unparseable rate. This is a property of the judge configuration, not of a leaderboard entry. It is the external anchor the study otherwise lacks. The calibration set also carries the reference judge's own labels (`llama3_cf`), so the reference configuration's accuracy is computed from stored labels with zero compute, alongside `harmbench_cf`, `gpt4_cf`, and `llamaguard2_cf` for comparison.
+
+M₃ is the only measure with an external anchor. M₁ and M₂ are the benchmark's own outputs. **Because M₁ is indexed by leaderboard entry and the redefined M₃ is indexed by judge configuration, they do not form a vector over a common index, and the transfer test in §5 H3 does not apply to them as written.** H3 stays not evaluable in its registered form. A judge-level hypothesis is registered in its place below as H3′.
 
 ---
 
@@ -83,7 +85,13 @@ Decision: for each entry e, spread(e) = max over θ of ASR(θ,e) minus min over 
 
 Decision: report ν for each dial separately and for both together. ν > 0.5 classifies the dial as nuisance at the 0.5 level. The threshold is pre-registered as 0.5. Both the orthant-cone ν and the uniform-ray ν are reported; the orthant version is the primary.
 
-**Outcomes.** All combinations of H1, H2, H3 supported or not are publishable. The study is not designed to produce a particular result.
+**H3′ (judge-level anchor), registered 2026-09-16 in v1.5 before the calibration set was scored.** Across the five alternate judge configurations with nonzero τ against the reference, Kendall's τ (from H1) and accuracy against `human_majority` (from redefined M₃) are positively rank-correlated: judges that agree more with the reference also agree more with humans.
+
+Decision: Spearman's ρ between the τ column and the accuracy column across judge configurations. ρ > 0 supports H3′. ρ ≤ 0 means agreement with the reference and agreement with truth come apart, which would mean the reference judge is not the right anchor. Both outcomes are reported. No threshold beyond the sign is pre-registered because five points cannot support one.
+
+Secondary, not a hypothesis: for the reference judge itself, accuracy against `human_majority` from the stored `llama3_cf` column is the ceiling any substitute is compared to.
+
+**Outcomes.** All combinations of H1, H2, H3, and H3′ supported or not are publishable. The study is not designed to produce a particular result.
 
 ---
 
@@ -164,6 +172,7 @@ Any edit to this document after publication produces a new version with a new ha
 
 ## Changelog
 
+- **1.4 → 1.5, 2026-09-16, after the artifact analysis was run and committed (ae9e7d0), before the calibration set was scored.** (1) M₃ as registered was found to cover one response; the `judge_comparison` set does not overlap the artifacts. Recorded as a wrong assumption, not a data problem. (2) M₃ redefined as judge-level accuracy against `human_majority` on the 300-row calibration set, both parser conditions. (3) H3 remains not evaluable in its registered form because M₁ and redefined M₃ are not co-indexed. (4) H3′ registered as the judge-level replacement: sign of Spearman's ρ between τ-vs-reference and accuracy-vs-humans across alternate judges. (5) **Disclosure:** while smoke-testing `analyze_calibration.py` against a stub, the stored `llama3_cf` and `gpt4_cf` columns were read from the real calibration file and the reference judge's accuracy against `human_majority` (0.907) and GPT-4's (0.903) were printed and seen before this version was committed. The four local judges' accuracies were not seen; their stub rows were synthetic. H3′ is unaffected. The secondary observation about the reference judge's ceiling is therefore not blind and is reported as such. No existing hypothesis or threshold changed. Version 1.5 is the pre-registration of record.
 - **1.3 → 1.4, 2026-09-16, after the Llama-3-8B, Qwen2.5-7B, and Gemma-2-9B passes completed and before the Mistral pass.** (1) Mistral-7B declared as running with `num_predict=32` and a 30-second timeout, with the reason and the three hang indices recorded; §3. (2) Citation for the parser audit changed from the issue number to the dinostomp ledger IDs F-030, F-031, F-032 at commit 3849382, per the ledger author's guidance; the cross-benchmark family is noted; §9. No hypothesis or threshold changed. Version 1.4 is the pre-registration of record.
 - **1.2 → 1.3, 2026-09-16, before the first local-judge scoring run.** Appendix A filled at execution time, as the appendix itself requires. No section other than Appendix A and this changelog changed. Version 1.3 is the pre-registration of record.
 - **1.1 → 1.2, 2026-09-16, after publication of 1.1 (commit c44d9211), before any scoring script commit and before any scoring run.** Corrections found by the scoring-script author on reading the pre-reg against the pinned sources. (1) Issue #50 lists eight defects, not ten; "ten" was the issue's probe count. §1 and §3 corrected. (2) Coverage is 14 of 18 entries at 100/100, not 16; the four PAIR figures were already correct. §2 corrected. (3) `jailbroken_llama_guard1` is absent for the two DSN entries; the Llama Guard 1 judge level covers 16 entries, stated in §3. (4) The corrected parser is three functions across three code paths, and one L175 defect is a coverage limit left unrepaired; stated in §3. (5) The Qwen judge is pinned; the "current model at execution time" clause is withdrawn. (6) **New rule:** unparseable judge replies under the corrected parser are reported under both denominator conventions plus the unparseable rate; §3 and §6.3. (7) M₂ requires a second scoring pass with a `judge_task` field; §4. (8) §6.1 contradicted §2 on missing responses; §6.1 corrected. (9) Stratification for the 70B reproduction check defined; §7. No hypothesis or threshold changed. Version 1.2 is the pre-registration of record.

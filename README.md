@@ -8,7 +8,7 @@ Michael Smith, Small Mind LLC. September 2026.
 
 | File | What it is | SHA-256 |
 |---|---|---|
-| `prereg-jbb-judge-parser-sensitivity.md` | Pre-registered experimental design, v1.4. Hypotheses, thresholds, and analysis plan frozen before any scoring. Changelog inside. | `752db2645910737e157841abf5310325c494374519432c746e1ed068f0524057` |
+| `prereg-jbb-judge-parser-sensitivity.md` | Pre-registered experimental design, v1.5. Hypotheses, thresholds, and analysis plan frozen before any scoring. Changelog inside. | `7f2bd31bf198554a9ceee7cc8300e1750e23d60ac98408ccd48384e23795b6e5` |
 | `evaluation-sensitivity-formal.md` | The formal framework: choice space, worst-case and expected-case sensitivity, the transfer test and nuisance fraction ν, rough-set treatment of the choice space, the refinement theorem, verified lineage, and prior work. | `433d27fed72188e595811fe58a1831be3aef7dceb4c4431ea0190df48e718dde` |
 | `the-number-is-a-point.md` | The same material, written to be taught from. | `b7fedfa656a8b81574372f038aec1eb0962e5f87d08738b6fa663ad7b8ea8d3c` |
 
@@ -30,6 +30,8 @@ Design is frozen at the pre-registration commit. The scoring script will be comm
 - 2026-09-16: Llama-3-8B, Qwen2.5-7B, Gemma-2-9B passes complete. Mistral-7B hung three times at the 300s timeout on the uncapped v2 script; 479 of 1,800 rows scored.
 - 2026-09-16: Pre-registration v1.4: Mistral deviation (num_predict=32, 30s timeout) declared before its pass; citations moved to dinostomp ledger IDs F-030/031/032 @ 3849382.
 - 2026-09-16: Script v3: judge_timeout rows, --num-predict, --timeout.
+- 2026-09-16: Mistral pass complete under the declared cap. 10,800 rows. Analysis script frozen, then run (`ae9e7d0`). H1 supported (min tau 0.115), H2 supported (max spread 0.82), H3 not evaluable, rough-boundary prediction failed.
+- 2026-09-16: Pre-registration v1.5: M3 as registered found to cover one response (calibration set does not overlap artifacts); M3 redefined as judge-level accuracy vs human_majority on the 300-row JBB judge_comparison set; H3' registered. Calibration scoring and analysis scripts frozen.
 - 2026-09-16: Scoring script frozen (`parsers.py`, `score.py`, `stub_judge.py`, `stub_results.jsonl`, `classifier_pinned_23dbdf6.py`). Not yet run against live judges.
 
 Prior versions remain in history. `v1.1` is at commit `c44d9211`.
