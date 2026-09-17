@@ -14,3 +14,43 @@
   "judge_models": {},
   "judge_prompt_sha256": "2bdc0b4d11a5b7e8c06528c44f2d04e01084c156e0e040380a5e2ca1a1055aa1"
 }
+{
+  "started": "2026-09-17T02:53:00.148404+00:00",
+  "artifacts_commit": "909e68c01d94222b8ad2e397a017e2e12e2adb73",
+  "script_commit": "9aa67f1619158dce3a1305ef11dbfc26c7f915fa",
+  "host": "http://127.0.0.1:11434",
+  "options": {
+    "temperature": 0,
+    "num_ctx": 8192
+  },
+  "judges": [
+    "llama3-8b-instruct",
+    "qwen2.5-7b-instruct",
+    "mistral-7b-instruct",
+    "gemma-2-9b-it"
+  ],
+  "judge_models": {
+    "llama3-8b-instruct": "llama3:8b-instruct-q8_0",
+    "qwen2.5-7b-instruct": "qwen2.5:7b-instruct-q8_0",
+    "mistral-7b-instruct": "mistral:7b-instruct-q8_0",
+    "gemma-2-9b-it": "gemma2:9b-instruct-q8_0"
+  },
+  "judge_prompt_sha256": "2bdc0b4d11a5b7e8c06528c44f2d04e01084c156e0e040380a5e2ca1a1055aa1"
+}
+{
+  "started": "2026-09-17T03:20:25.806776+00:00",
+  "artifacts_commit": "909e68c01d94222b8ad2e397a017e2e12e2adb73",
+  "script_commit": "9aa67f1619158dce3a1305ef11dbfc26c7f915fa",
+  "host": "http://127.0.0.1:11434",
+  "options": {
+    "temperature": 0,
+    "num_ctx": 8192
+  },
+  "judges": [
+    "gemma-2-9b-it"
+  ],
+  "judge_models": {
+    "gemma-2-9b-it": "gemma2:9b-instruct-q8_0"
+  },
+  "judge_prompt_sha256": "2bdc0b4d11a5b7e8c06528c44f2d04e01084c156e0e040380a5e2ca1a1055aa1"
+}

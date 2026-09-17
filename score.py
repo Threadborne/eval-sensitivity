@@ -114,7 +114,7 @@ def make_row(entry, behavior_index, judge, raw, shipped, corrected, reason):
 
 
 class OllamaJudge:
-    def __init__(self, host, model, options, timeout=300):
+    def __init__(self, host, model, options, timeout=30):
         self.url = host.rstrip("/") + "/api/chat"
         self.model = model
         self.options = options
@@ -162,7 +162,7 @@ def write_manifest(out_path, artifacts_root, judge_models, host, options, judges
 
 
 def score(artifacts_root, out_path, judge_models, host, judges=None,
-          limit_entries=None, dry_run=False, options=None):
+          limit_entries=None, dry_run=False, options=None, timeout=30):
     options = options or {"temperature": 0, "num_ctx": 8192}
     entries = discover_entries(artifacts_root)
     if limit_entries:
@@ -182,7 +182,7 @@ def score(artifacts_root, out_path, judge_models, host, judges=None,
         model = judge_models.get(name)
         if not model:
             raise SystemExit(f"no Ollama model pinned for judge '{name}'; pass --judge-models {name}=TAG")
-        clients[name] = OllamaJudge(host, model, options)
+        clients[name] = OllamaJudge(host, model, options, timeout)
 
     loaded = {}
     for entry_name, path in entries:
@@ -228,7 +228,17 @@ def score(artifacts_root, out_path, judge_models, host, judges=None,
                     continue
                 try:
                     raw = clients[judge_name](prompt)
+                except TimeoutError:
+                    sys.stderr.write(f"judge timeout {entry_name} idx={idx} judge={judge_name}\n")
+                    append_row(out_path, make_row(entry_name, idx, judge_name, None, None, None, "judge_timeout"))
+                    written += 1
+                    continue
                 except (urllib.error.URLError, OSError, KeyError, ValueError) as exc:
+                    if isinstance(getattr(exc, "reason", None), TimeoutError):
+                        sys.stderr.write(f"judge timeout {entry_name} idx={idx} judge={judge_name}\n")
+                        append_row(out_path, make_row(entry_name, idx, judge_name, None, None, None, "judge_timeout"))
+                        written += 1
+                        continue
                     sys.stderr.write(f"transport error {entry_name} idx={idx} judge={judge_name}: {exc!r}\n")
                     continue
                 called += 1
@@ -247,6 +257,8 @@ def main(argv=None):
     ap.add_argument("--judges", nargs="*", default=None)
     ap.add_argument("--judge-models", nargs="*", default=[], metavar="NAME=TAG")
     ap.add_argument("--num-ctx", type=int, default=8192)
+    ap.add_argument("--num-predict", type=int, default=None)
+    ap.add_argument("--timeout", type=int, default=30)
     ap.add_argument("--limit-entries", type=int, default=None)
     ap.add_argument("--coverage-only", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
@@ -267,9 +279,12 @@ def main(argv=None):
     for pair in args.judge_models:
         name, _, tag = pair.partition("=")
         models[name] = tag
+    options = {"temperature": 0, "num_ctx": args.num_ctx}
+    if args.num_predict is not None:
+        options["num_predict"] = args.num_predict
     stats = score(args.artifacts, args.out, models, args.host, judges=args.judges,
                   limit_entries=args.limit_entries, dry_run=args.dry_run,
-                  options={"temperature": 0, "num_ctx": args.num_ctx})
+                  options=options, timeout=args.timeout)
     print(json.dumps(stats, indent=2))
     return 0
 
