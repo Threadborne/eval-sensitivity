@@ -1,0 +1,29 @@
+{
+  "started": "2026-09-17T04:03:49.391960+00:00",
+  "calibration_file": "calibration_set.jsonl",
+  "calibration_sha256": "d11b02921cbc05c3de023081f7ffaa9684795167390f4ea43d0ddb868145fdf8",
+  "script_commit": "2f44ad6a83307ee306ea839482d8a26c8962b75e",
+  "host": "http://127.0.0.1:11434",
+  "options": {
+    "temperature": 0,
+    "num_ctx": 8192,
+    "num_predict": 32
+  },
+  "judges": [
+    "llama3-70b",
+    "llamaguard2",
+    "gpt4",
+    "harmbench",
+    "llama3-8b-instruct",
+    "qwen2.5-7b-instruct",
+    "mistral-7b-instruct",
+    "gemma-2-9b-it"
+  ],
+  "judge_models": {
+    "llama3-8b-instruct": "llama3:8b-instruct-q8_0",
+    "qwen2.5-7b-instruct": "qwen2.5:7b-instruct-q8_0",
+    "mistral-7b-instruct": "mistral:7b-instruct-q8_0",
+    "gemma-2-9b-it": "gemma2:9b-instruct-q8_0"
+  },
+  "judge_prompt_sha256": "2bdc0b4d11a5b7e8c06528c44f2d04e01084c156e0e040380a5e2ca1a1055aa1"
+}
