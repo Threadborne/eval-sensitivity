@@ -54,3 +54,21 @@
   },
   "judge_prompt_sha256": "2bdc0b4d11a5b7e8c06528c44f2d04e01084c156e0e040380a5e2ca1a1055aa1"
 }
+{
+  "started": "2026-09-17T03:29:20.832354+00:00",
+  "artifacts_commit": "909e68c01d94222b8ad2e397a017e2e12e2adb73",
+  "script_commit": "ea79fe402450c746db3c99a9db868ef025a4ccbd",
+  "host": "http://127.0.0.1:11434",
+  "options": {
+    "temperature": 0,
+    "num_ctx": 8192,
+    "num_predict": 32
+  },
+  "judges": [
+    "mistral-7b-instruct"
+  ],
+  "judge_models": {
+    "mistral-7b-instruct": "mistral:7b-instruct-q8_0"
+  },
+  "judge_prompt_sha256": "2bdc0b4d11a5b7e8c06528c44f2d04e01084c156e0e040380a5e2ca1a1055aa1"
+}
