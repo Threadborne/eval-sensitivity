@@ -1,0 +1,209 @@
+{
+  "n_rows": 2400,
+  "M3_accuracy_vs_human_majority": {
+    "gemma-2-9b-it|shipped": {
+      "n": 300,
+      "accuracy": 0.88,
+      "precision": 0.7681159420289855,
+      "recall": 0.9636363636363636,
+      "tp": 106,
+      "fp": 32,
+      "tn": 158,
+      "fn": 4,
+      "unparseable": 0,
+      "unparseable_rate": 0.0,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "gemma-2-9b-it|corrected": {
+      "n": 300,
+      "accuracy": 0.88,
+      "precision": 0.7681159420289855,
+      "recall": 0.9636363636363636,
+      "tp": 106,
+      "fp": 32,
+      "tn": 158,
+      "fn": 4,
+      "unparseable": 0,
+      "unparseable_rate": 0.0,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "gpt4|shipped": {
+      "n": 300,
+      "accuracy": 0.9033333333333333,
+      "precision": 0.8403361344537815,
+      "recall": 0.9090909090909091,
+      "tp": 100,
+      "fp": 19,
+      "tn": 171,
+      "fn": 10,
+      "unparseable": 0,
+      "unparseable_rate": 0.0,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "harmbench|shipped": {
+      "n": 300,
+      "accuracy": 0.7833333333333333,
+      "precision": 0.6530612244897959,
+      "recall": 0.8727272727272727,
+      "tp": 96,
+      "fp": 51,
+      "tn": 139,
+      "fn": 14,
+      "unparseable": 0,
+      "unparseable_rate": 0.0,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "llama3-70b|shipped": {
+      "n": 300,
+      "accuracy": 0.9066666666666666,
+      "precision": 0.8253968253968254,
+      "recall": 0.9454545454545454,
+      "tp": 104,
+      "fp": 22,
+      "tn": 168,
+      "fn": 6,
+      "unparseable": 0,
+      "unparseable_rate": 0.0,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "llama3-8b-instruct|shipped": {
+      "n": 300,
+      "accuracy": 0.7266666666666667,
+      "precision": 0.5972222222222222,
+      "recall": 0.7818181818181819,
+      "tp": 86,
+      "fp": 58,
+      "tn": 132,
+      "fn": 24,
+      "unparseable": 0,
+      "unparseable_rate": 0.0,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "llama3-8b-instruct|corrected": {
+      "n": 300,
+      "accuracy": 0.7266666666666667,
+      "precision": 0.5972222222222222,
+      "recall": 0.7818181818181819,
+      "tp": 86,
+      "fp": 58,
+      "tn": 132,
+      "fn": 24,
+      "unparseable": 28,
+      "unparseable_rate": 0.09333333333333334,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "llamaguard2|shipped": {
+      "n": 300,
+      "accuracy": 0.8766666666666667,
+      "precision": 0.7967479674796748,
+      "recall": 0.8909090909090909,
+      "tp": 98,
+      "fp": 25,
+      "tn": 165,
+      "fn": 12,
+      "unparseable": 0,
+      "unparseable_rate": 0.0,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "mistral-7b-instruct|shipped": {
+      "n": 300,
+      "accuracy": 0.6933333333333334,
+      "precision": 0.5633802816901409,
+      "recall": 0.7272727272727273,
+      "tp": 80,
+      "fp": 62,
+      "tn": 128,
+      "fn": 30,
+      "unparseable": 0,
+      "unparseable_rate": 0.0,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "mistral-7b-instruct|corrected": {
+      "n": 300,
+      "accuracy": 0.7366666666666667,
+      "precision": 0.5837837837837838,
+      "recall": 0.9818181818181818,
+      "tp": 108,
+      "fp": 77,
+      "tn": 113,
+      "fn": 2,
+      "unparseable": 60,
+      "unparseable_rate": 0.2,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "qwen2.5-7b-instruct|shipped": {
+      "n": 300,
+      "accuracy": 0.8566666666666667,
+      "precision": 0.7310344827586207,
+      "recall": 0.9636363636363636,
+      "tp": 106,
+      "fp": 39,
+      "tn": 151,
+      "fn": 4,
+      "unparseable": 0,
+      "unparseable_rate": 0.0,
+      "unparseable_counted_as": "not_jailbroken"
+    },
+    "qwen2.5-7b-instruct|corrected": {
+      "n": 300,
+      "accuracy": 0.8566666666666667,
+      "precision": 0.7310344827586207,
+      "recall": 0.9636363636363636,
+      "tp": 106,
+      "fp": 39,
+      "tn": 151,
+      "fn": 4,
+      "unparseable": 0,
+      "unparseable_rate": 0.0,
+      "unparseable_counted_as": "not_jailbroken"
+    }
+  },
+  "reference_judge_accuracy": 0.9066666666666666,
+  "H3_prime": {
+    "n_configs": 8,
+    "spearman_rho": 0.9259259259259259,
+    "supported": true,
+    "pairs": [
+      {
+        "config": "gemma-2-9b-it|shipped",
+        "tau_vs_reference": 0.8323835009886348,
+        "accuracy_vs_humans": 0.88
+      },
+      {
+        "config": "gemma-2-9b-it|corrected",
+        "tau_vs_reference": 0.8323835009886348,
+        "accuracy_vs_humans": 0.88
+      },
+      {
+        "config": "qwen2.5-7b-instruct|shipped",
+        "tau_vs_reference": 0.7687252703541149,
+        "accuracy_vs_humans": 0.8566666666666667
+      },
+      {
+        "config": "qwen2.5-7b-instruct|corrected",
+        "tau_vs_reference": 0.7687252703541149,
+        "accuracy_vs_humans": 0.8566666666666667
+      },
+      {
+        "config": "mistral-7b-instruct|corrected",
+        "tau_vs_reference": 0.636986301369863,
+        "accuracy_vs_humans": 0.7366666666666667
+      },
+      {
+        "config": "mistral-7b-instruct|shipped",
+        "tau_vs_reference": 0.3077766642630851,
+        "accuracy_vs_humans": 0.6933333333333334
+      },
+      {
+        "config": "llama3-8b-instruct|shipped",
+        "tau_vs_reference": 0.11487535432791261,
+        "accuracy_vs_humans": 0.7266666666666667
+      },
+      {
+        "config": "llama3-8b-instruct|corrected",
+        "tau_vs_reference": 0.11487535432791261,
+        "accuracy_vs_humans": 0.7266666666666667
+      }
+    ]
+  }
+}
