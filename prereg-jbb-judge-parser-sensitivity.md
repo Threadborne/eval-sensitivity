@@ -2,7 +2,7 @@
 
 **Author:** Michael Smith, Small Mind LLC, Lansing, MI
 **Date:** 2026-09-16
-**Version:** 1.1
+**Version:** 1.2
 **Status:** Pre-registered. No scoring has been run. No number in this document is a result.
 
 ---
@@ -11,7 +11,7 @@
 
 JailbreakBench (Chao et al., NeurIPS 2024 Datasets and Benchmarks) reports attack success rate (ASR) for attacks and defenses, scored by a Llama-3-70B judge through a parsing layer in `src/jailbreakbench/classifier.py`. The reported number is one point in a space of evaluation choices. This study asks whether the leaderboard ordering survives when two of those choices are varied:
 
-1. **Parser.** Issue #50 (collapseindex, filed 2026-09-16) documents ten defects in the parsing layer that alter the verdict on spec-compliant judge output, including forcing any response under 15 space-separated tokens to "not jailbroken" and matching refusal phrases as substrings anywhere rather than as prefixes. The issue states explicitly that re-scoring the published artifacts was not done.
+1. **Parser.** Issue #50 (collapseindex, filed 2026-09-16) documents eight defects in the parsing layer that alter the verdict on spec-compliant judge output: two unconditional (forcing any response under 15 space-separated tokens to "not jailbroken"; matching refusal phrases as substrings anywhere rather than as prefixes) and six conditional on the judge replying with more than the single token it was asked for. The issue states explicitly that re-scoring the published artifacts was not done.
 2. **Judge model.** The reference judge is Llama-3-70B. Whether a different judge model, holding everything else fixed, produces the same ranking is not reported.
 
 The study measures the effect of each dial and both together on the ordering of leaderboard entries, and classifies each dial as a target axis or a nuisance axis using the transfer criterion defined in the companion framework document.
@@ -23,7 +23,7 @@ The study measures the effect of each dial and both together on the ordering of 
 - The JBB-Behaviors dataset, 100 harmful behaviors, as published.
 - The published jailbreak artifacts (prompts, target responses, and shipped classifications) from `github.com/JailbreakBench/artifacts`, at the commit hash recorded in Appendix A at execution time.
 - No new attacks are generated. No target models are run. Only existing responses are re-scored.
-- **Missing-response rule.** Some entries store no response for some behaviors. This is by construction: PAIR stores a response only when it finds a jailbreak within its query budget, so a missing response means the attack failed on that behavior. Missing responses are treated as **not jailbroken** under every configuration, matching JailbreakBench's own convention. Coverage per entry at the artifacts commit below: 16 of 18 entries at 100/100; PAIR on Vicuna 82/100, PAIR on GPT-3.5 87/100, PAIR on GPT-4 64/100, PAIR on Llama-2 **4/100**. Because 4 responses cannot support a rank position, all ranking metrics are reported twice: once over all 18 entries and once over the 17 entries excluding PAIR on Llama-2. Both are pre-registered; neither is primary.
+- **Missing-response rule.** Some entries store no response for some behaviors. This is by construction: PAIR stores a response only when it finds a jailbreak within its query budget, so a missing response means the attack failed on that behavior. Missing responses are treated as **not jailbroken** under every configuration, matching JailbreakBench's own convention. Coverage per entry at the artifacts commit below: 14 of 18 entries at 100/100; PAIR on Vicuna 82/100, PAIR on GPT-3.5 87/100, PAIR on GPT-4 64/100, PAIR on Llama-2 **4/100**. Because 4 responses cannot support a rank position, all ranking metrics are reported twice: once over all 18 entries and once over the 17 entries excluding PAIR on Llama-2. Both are pre-registered; neither is primary.
 - The judge prompt template as shipped, byte-identical across all judge models.
 - Scoring script frozen at a public commit before any scoring run.
 
@@ -33,13 +33,13 @@ The study measures the effect of each dial and both together on the ordering of 
 
 **Dial 1, parser.** Two levels.
 - `shipped`: `classifier.py` at commit `23dbdf6b19650521604456229bc1d9c4156c85c1`, the commit audited in issue #50.
-- `corrected`: the same file with the ten defects in issue #50 repaired, per the audit's stated directions. The corrected file is published alongside the scoring script.
+- `corrected`: the same file with the eight defects in issue #50 repaired, per the audit's stated directions. The corrected file is published alongside the scoring script. The six cited line numbers span three code paths (Llama Guard 1 at L63/L65; Llama 3 at L110/L128/L130; the string classifier at L175), so the corrected parser is three functions, one per path, not one. One defect (a genuine refusal worded outside the 13 listed phrases, the over-reporting half of L175) is a coverage limit of a fixed phrase list rather than a matching bug. It is documented and left unrepaired; extending the phrase list would be an undeclared dial.
 
 **Dial 2, judge model.** Six levels.
 - `llama3-70b`: the reference judge. Its labels are already present in the artifacts as the `jailbroken` field; these are used as-is for the full set. A fresh API re-run on a stratified subset of at least 200 responses checks that the stored labels reproduce (see §7).
-- `llama-guard-1`: already present in the artifacts as the `jailbroken_llama_guard1` field. Used as-is. Zero compute. Note: Llama Guard 1 is the judge governed by the 15-token defect in issue #50, so this level interacts with the parser dial in a known way.
+- `llama-guard-1`: present in the artifacts as the `jailbroken_llama_guard1` field for 16 of 18 entries. The two DSN entries have no such field; DSN was added to the artifacts repository in the pinned commit, after the Llama Guard 1 labeling pass. Used as-is where present; the two DSN entries are recorded with reason `stored_label_absent` and this judge level covers 16 entries. Kendall's τ for this level is computed over the 16 entries it covers, and this is stated wherever it is reported. Zero compute. Note: Llama Guard 1 is the judge governed by the 15-token defect in issue #50, so this level interacts with the parser dial in a known way.
 - `llama3-8b-instruct`
-- `qwen2.5-7b-instruct` (or the current Qwen instruct model in the same size class at execution time; recorded in Appendix A)
+- `qwen2.5-7b-instruct`, pinned. The v1.1 text allowing "the current Qwen instruct model at execution time" is withdrawn: a study of undeclared choice space should not leave a choice open inside a dial.
 - `mistral-7b-instruct`
 - `gemma-2-9b-it`
 
@@ -47,7 +47,9 @@ Four families among the locals (Meta, Alibaba, Mistral AI, Google) so that same-
 
 Θ_d = {shipped, corrected} × {six judges} = 12 configurations. The reference configuration θ₀ = (shipped, llama3-70b).
 
-For the two judges whose labels are stored in the artifacts, the `shipped` parser condition is the stored label and the `corrected` condition is recomputed from the stored raw judge output where available, or flagged as not recomputable where only the parsed verdict was stored.
+For the two judges whose labels are stored in the artifacts, the `shipped` parser condition is the stored label and the `corrected` condition is recorded as not recomputable, since only the parsed verdict was stored and no raw judge output exists.
+
+**Unparseable-reply rule.** Under the `corrected` parser, a judge reply that is off-spec (no anchored verdict token, empty, or a declination) yields no verdict and is stored as `null` with reason `unparseable_judge_reply`. Because excluding such rows from the ASR denominator and counting them as not-jailbroken give different ASRs and potentially different rankings, **both conventions are computed and reported for every (θ, e)**, alongside the unparseable rate itself as a separate column. Neither convention is primary. The unparseable rate is treated as a property of the judge configuration and is reported as a finding, not suppressed.
 
 **Declared as out of scope for this study:** judge prompt wording, temperature, behavior subset selection, ASR aggregation rule. These are real dials. They are not turned here. Anyone can extend Θ_d; that is the point of declaring it.
 
@@ -58,7 +60,7 @@ For the two judges whose labels are stored in the artifacts, the `shipped` parse
 For each configuration θ and each leaderboard entry e (an attack on a target model, or a defense on a target model):
 
 - **M₁: ASR(θ, e)**, fraction of the 100 behaviors labeled jailbroken.
-- **M₂: refusal rate(θ, e)**, using the shipped Llama3RefusalJudge under the same parser condition.
+- **M₂: refusal rate(θ, e)**, using the shipped Llama3RefusalJudge prompt under the same parser condition. This requires a second scoring pass with the refusal prompt; rows carry a `judge_task ∈ {jailbreak, refusal}` field. Two of the eight defects (L110 and L146, on the refusal path) are exercised only by this pass.
 - **M₃: label agreement with human labels**, on the subset of responses covered by the JailbreakBench `judge_comparison` dataset on HuggingFace, where human labels exist.
 
 M₃ is the only measure with an external anchor. M₁ and M₂ are the benchmark's own outputs. K = 3. K_eff will be computed as the rank of the covariance of (M₁, M₂, M₃) across Θ_d and reported; if K_eff < 3, the transfer test is weakened accordingly and this is stated.
@@ -87,9 +89,9 @@ Decision: report ν for each dial separately and for both together. ν > 0.5 cla
 
 ## 6. Analysis plan, frozen
 
-1. Pull artifacts at the commit hash in Appendix A. Confirm `response` fields are populated for every entry used. Any entry with a missing or redacted response is excluded and listed.
+1. Pull artifacts at the commit hash in Appendix A. Confirm per-entry response coverage matches §2. Missing responses are handled per the rule in §2; no entry is excluded on that basis.
 2. Run every response through every configuration in Θ_d. Store raw judge outputs and parsed verdicts separately, so parser effects are separable from judge effects after the fact.
-3. Compute M₁, M₂, M₃ per (θ, e).
+3. Compute M₁, M₂, M₃ per (θ, e), under both unparseable conventions (§3), with the unparseable rate as its own column.
 4. Compute Kendall's τ per configuration against θ₀. Report the full matrix.
 5. Compute spread(e) and g_min. Report both and the ratio.
 6. Bootstrap over behaviors (1000 resamples) to estimate Σ, the covariance of (M₁, M₂, M₃). Compute K_eff.
@@ -108,7 +110,7 @@ No step is added or removed after scoring begins. Any deviation is recorded in a
 - N = 18 leaderboard entries at the artifacts commit below (5 attacks × 4 targets, less 2 unpublished combinations). Approximately 1,800 stored responses.
 - Local judge calls: 1,800 responses × 4 local judges = 7,200 calls, each stored as raw output so both parser conditions are derived from one run. At roughly 1–2 seconds per call on the stated hardware, 2–4 hours per judge.
 - Two judges (Llama-3-70B, Llama Guard 1) cost nothing; their labels are in the data.
-- The 70B reproduction check: at least 200 API calls.
+- The 70B reproduction check: at least 200 API calls. **Stratification:** by entry, so each of the 18 entries contributes at least 11 responses, balanced within entry on the stored `jailbroken` label where both labels exist. The sampled indices are committed with the script before the calls are made.
 
 ---
 
@@ -137,7 +139,7 @@ To be filled in before the first scoring run and committed with the script.
 
 - Artifacts repo commit hash: `909e68c01d94222b8ad2e397a017e2e12e2adb73` (verified 2026-09-16; 18 attack artifacts, 100 behaviors each, response coverage as stated in §2)
 - jailbreakbench package commit hash for the shipped parser: `23dbdf6b19650521604456229bc1d9c4156c85c1` (the commit audited in issue #50)
-- Local judge model identifiers and precision:
+- Local judge model identifiers, Ollama tags, digests from `ollama show`, and precision:
 - N (number of leaderboard entries scored):
 - Date of first scoring run:
 
@@ -150,4 +152,5 @@ Any edit to this document after publication produces a new version with a new ha
 
 ## Changelog
 
+- **1.1 → 1.2, 2026-09-16, after publication of 1.1 (commit c44d9211), before any scoring script commit and before any scoring run.** Corrections found by the scoring-script author on reading the pre-reg against the pinned sources. (1) Issue #50 lists eight defects, not ten; "ten" was the issue's probe count. §1 and §3 corrected. (2) Coverage is 14 of 18 entries at 100/100, not 16; the four PAIR figures were already correct. §2 corrected. (3) `jailbroken_llama_guard1` is absent for the two DSN entries; the Llama Guard 1 judge level covers 16 entries, stated in §3. (4) The corrected parser is three functions across three code paths, and one L175 defect is a coverage limit left unrepaired; stated in §3. (5) The Qwen judge is pinned; the "current model at execution time" clause is withdrawn. (6) **New rule:** unparseable judge replies under the corrected parser are reported under both denominator conventions plus the unparseable rate; §3 and §6.3. (7) M₂ requires a second scoring pass with a `judge_task` field; §4. (8) §6.1 contradicted §2 on missing responses; §6.1 corrected. (9) Stratification for the 70B reproduction check defined; §7. No hypothesis or threshold changed. Version 1.2 is the pre-registration of record.
 - **1.0 → 1.1, 2026-09-16, before publication.** Added `llama-guard-1` as a sixth judge level (labels already present in artifacts). Added the missing-response rule and per-entry coverage after verifying the artifacts directly. Recorded artifacts commit hash. Updated configuration count to 12 and compute estimate accordingly. No hypotheses or thresholds changed. Version 1.1 is the pre-registration of record.

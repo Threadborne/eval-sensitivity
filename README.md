@@ -8,7 +8,7 @@ Michael Smith, Small Mind LLC. September 2026.
 
 | File | What it is | SHA-256 |
 |---|---|---|
-| `prereg-jbb-judge-parser-sensitivity.md` | Pre-registered experimental design, v1.1. Hypotheses, thresholds, and analysis plan frozen before any scoring. | `a3a965f48e8bbbe40530527bb05e813500be4ccf5472feeeccb9037a2d7afbe0` |
+| `prereg-jbb-judge-parser-sensitivity.md` | Pre-registered experimental design, v1.2. Hypotheses, thresholds, and analysis plan frozen before any scoring. Changelog inside. | `e86d636e7a13f9f03fe69243325b93d74fb085637fb3f7a73c55e100b5b28b3a` |
 | `evaluation-sensitivity-formal.md` | The formal framework: choice space, worst-case and expected-case sensitivity, the transfer test and nuisance fraction ν, rough-set treatment of the choice space, the refinement theorem, verified lineage, and prior work. | `433d27fed72188e595811fe58a1831be3aef7dceb4c4431ea0190df48e718dde` |
 | `the-number-is-a-point.md` | The same material, written to be taught from. | `b7fedfa656a8b81574372f038aec1eb0962e5f87d08738b6fa663ad7b8ea8d3c` |
 
@@ -22,7 +22,11 @@ Design is frozen at the pre-registration commit. The scoring script will be comm
 
 ## Status
 
-- 2026-09-16: Pre-registration v1.1 committed. No scoring has been run.
+- 2026-09-16: Pre-registration v1.1 committed (`c44d9211`). No scoring has been run.
+- 2026-09-16: Pre-registration v1.2 committed. Nine corrections found by reading v1.1 against the pinned sources while writing the scoring script; none change a hypothesis or threshold. Changelog in the document. Still no scoring run.
+- 2026-09-16: Scoring script frozen (`parsers.py`, `score.py`, `stub_judge.py`, `stub_results.jsonl`, `classifier_pinned_23dbdf6.py`). Not yet run against live judges.
+
+Prior versions remain in history. `v1.1` is at commit `c44d9211`.
 
 ## Prior instance
 
