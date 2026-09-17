@@ -2,7 +2,7 @@
 
 **Author:** Michael Smith, Small Mind LLC, Lansing, MI
 **Date:** 2026-09-16
-**Version:** 1.2
+**Version:** 1.3
 **Status:** Pre-registered. No scoring has been run. No number in this document is a result.
 
 ---
@@ -135,13 +135,25 @@ No step is added or removed after scoring begins. Any deviation is recorded in a
 
 ## Appendix A: recorded at execution time
 
-To be filled in before the first scoring run and committed with the script.
+Filled 2026-09-16 before the first local-judge scoring run.
 
 - Artifacts repo commit hash: `909e68c01d94222b8ad2e397a017e2e12e2adb73` (verified 2026-09-16; 18 attack artifacts, 100 behaviors each, response coverage as stated in §2)
 - jailbreakbench package commit hash for the shipped parser: `23dbdf6b19650521604456229bc1d9c4156c85c1` (the commit audited in issue #50)
-- Local judge model identifiers, Ollama tags, digests from `ollama show`, and precision:
-- N (number of leaderboard entries scored):
-- Date of first scoring run:
+- Local judge models, all Q8_0 quantization, served by Ollama:
+
+  | Dial 2 level | Ollama tag | Ollama digest | Size |
+  |---|---|---|---|
+  | `llama3-8b-instruct` | `llama3:8b-instruct-q8_0` | `1b8e49cece7f` | 8.5 GB |
+  | `qwen2.5-7b-instruct` | `qwen2.5:7b-instruct-q8_0` | `2d9500c94841` | 8.1 GB |
+  | `mistral-7b-instruct` | `mistral:7b-instruct-q8_0` | `2162e081e7f0` | 7.7 GB |
+  | `gemma-2-9b-it` | `gemma2:9b-instruct-q8_0` | `54faa8324fdf` | 9.8 GB |
+
+- Decoding options for all local judges: `temperature=0`, `num_ctx=8192`. Recorded per run in `results.jsonl.manifest.json`.
+- Hardware: one NVIDIA RTX 5070 Ti, 16 GB.
+- N (leaderboard entries scored): 18.
+- Scoring script: `score.py` and `parsers.py` at repository commit for "Script v2" (see git history); `JUDGE_PROMPT` SHA-256 `2bdc0b4d11a5b7e8c06528c44f2d04e01084c156e0e040380a5e2ca1a1055aa1`, verified byte-identical to the pinned source by `parsers.py` before the run.
+- Stored-label run (Dial 2 levels `llama3-70b`, `llama-guard-1`): 2026-09-16, 3,600 rows, 0 judge calls.
+- First local-judge scoring run: 2026-09-16, started after this appendix was committed.
 
 ## Appendix B: document hashes
 
@@ -152,5 +164,6 @@ Any edit to this document after publication produces a new version with a new ha
 
 ## Changelog
 
+- **1.2 → 1.3, 2026-09-16, before the first local-judge scoring run.** Appendix A filled at execution time, as the appendix itself requires. No section other than Appendix A and this changelog changed. Version 1.3 is the pre-registration of record.
 - **1.1 → 1.2, 2026-09-16, after publication of 1.1 (commit c44d9211), before any scoring script commit and before any scoring run.** Corrections found by the scoring-script author on reading the pre-reg against the pinned sources. (1) Issue #50 lists eight defects, not ten; "ten" was the issue's probe count. §1 and §3 corrected. (2) Coverage is 14 of 18 entries at 100/100, not 16; the four PAIR figures were already correct. §2 corrected. (3) `jailbroken_llama_guard1` is absent for the two DSN entries; the Llama Guard 1 judge level covers 16 entries, stated in §3. (4) The corrected parser is three functions across three code paths, and one L175 defect is a coverage limit left unrepaired; stated in §3. (5) The Qwen judge is pinned; the "current model at execution time" clause is withdrawn. (6) **New rule:** unparseable judge replies under the corrected parser are reported under both denominator conventions plus the unparseable rate; §3 and §6.3. (7) M₂ requires a second scoring pass with a `judge_task` field; §4. (8) §6.1 contradicted §2 on missing responses; §6.1 corrected. (9) Stratification for the 70B reproduction check defined; §7. No hypothesis or threshold changed. Version 1.2 is the pre-registration of record.
 - **1.0 → 1.1, 2026-09-16, before publication.** Added `llama-guard-1` as a sixth judge level (labels already present in artifacts). Added the missing-response rule and per-entry coverage after verifying the artifacts directly. Recorded artifacts commit hash. Updated configuration count to 12 and compute estimate accordingly. No hypotheses or thresholds changed. Version 1.1 is the pre-registration of record.
